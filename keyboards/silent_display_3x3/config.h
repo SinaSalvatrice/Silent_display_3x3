@@ -19,5 +19,5 @@
 #define I2C1_SDA_PIN GP0
 #define OLED_TIMEOUT 60000
 
-// VIA – 6 layers (0-5)
-#define DYNAMIC_KEYMAP_LAYER_COUNT 6
+// VIA – 9 layers (0-8)
+#define DYNAMIC_KEYMAP_LAYER_COUNT 9
