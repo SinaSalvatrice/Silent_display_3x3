@@ -10,7 +10,7 @@ on:
       - ".github/workflows/build-uf2-silent_display_3x3.yml"
   pull_request:
     paths:
-      - "keyboards/silent_display_3x3/**"
+      - "silent_display_3x3/**"
       - ".github/workflows/build-uf2-silent_display_3x3.yml"
   workflow_dispatch:
 
@@ -49,12 +49,12 @@ jobs:
 
       - name: Copy keyboard into QMK tree
         run: |
-          mkdir -p ~/qmk_firmware/keyboards/silent_display_3x3
+          mkdir -p ~/qmk_firmware/silent_display_3x3
           rsync -a --delete \
             --exclude '.git' \
             --exclude '.github' \
-            "$GITHUB_WORKSPACE/keyboards/silent_display_3x3/" \
-            ~/qmk_firmware/keyboards/silent_display_3x3/
+            "$GITHUB_WORKSPACE/silent_display_3x3/" \
+            ~/qmk_firmware/silent_display_3x3/
 
       - name: Compile (custom)
         run: |
