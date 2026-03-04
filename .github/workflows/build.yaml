@@ -70,10 +70,11 @@ jobs:
       - name: Upload build outputs (custom)
         uses: actions/upload-artifact@v4
         with:
+        
         name: silent_display_3x3_custom_build
         path: |
         ~/qmk_firmware/.build/*
-    if-no-files-found: error
+        if-no-files-found: error
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
