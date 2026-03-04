@@ -62,6 +62,9 @@ jobs:
           ls -la ~/qmk_firmware/.build || true
           find ~/qmk_firmware/.build -maxdepth 1 -type f -name "*.uf2" -print
 
+          - name: Install AVR GCC
+            run: sudo apt-get update && sudo apt-get install -y gcc-avr binutils-avr avr-libc
+
       - name: Upload UF2 artifact (custom)
         uses: actions/upload-artifact@v4
         with:
