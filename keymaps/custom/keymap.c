@@ -1,6 +1,5 @@
 
 #include QMK_KEYBOARD_H
-#include "timer.h"
 
 // ---------------------------------------------------------------------------
 // Layer definitions
@@ -19,7 +18,6 @@ enum layer_names {
 // ---------------------------------------------------------------------------
 static bool     btn_pressed          = false;
 static bool     btn_held_with_turn   = false;
-static uint16_t btn_timer            = 0;
 
 // ---------------------------------------------------------------------------
 // Layer-selector state
@@ -87,7 +85,6 @@ void matrix_scan_user(void) {
         // Rising edge: button just pressed
         btn_pressed        = true;
         btn_held_with_turn = false;
-        btn_timer          = timer_read();
     } else if (!is_pressed && btn_pressed) {
         // Falling edge: button just released
         btn_pressed = false;
@@ -259,11 +256,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_MRWD,                      KC_MSTP,                        KC_MFFD
   ),
 
-  /* L5: Spare / custom */
+    /* L5: LAYER SELECT (tap to jump) */
   [5] = LAYOUT(
-    KC_NO,                        KC_NO,                          KC_NO,
-    KC_NO,                        KC_NO,                          KC_NO,
-    KC_NO,                        KC_NO,                          KC_NO
+        TO(0),                        TO(1),                          TO(2),
+        TO(3),                        TO(4),                          TO(5),
+        TO(6),                        TO(7),                          KC_NO
   ),
 
   /* L6: Spare / custom */
@@ -280,10 +277,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_NO,                        KC_NO,                          KC_NO
   ),
 
-  /* L8: LAYER SELECT (tap to jump) */
+    /* L8: Spare / custom */
   [8] = LAYOUT(
-    TO(0),                        TO(1),                          TO(2),
-    TO(3),                        TO(4),                          TO(5),
-    TO(6),                        TO(7),                          KC_NO
+        KC_NO,                        KC_NO,                          KC_NO,
+        KC_NO,                        KC_NO,                          KC_NO,
+        KC_NO,                        KC_NO,                          KC_NO
   )
 };
