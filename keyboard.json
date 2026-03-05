@@ -39,7 +39,7 @@
         "nkro": true,
         "encoder": true,
         "rgblight": true,
-        "via": true
+    
     },
     "layouts": {
         "LAYOUT": {
@@ -57,4 +57,5 @@
         }
     }
 }
+
 
