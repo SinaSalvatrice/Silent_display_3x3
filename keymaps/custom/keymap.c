@@ -11,6 +11,41 @@ void keyboard_post_init_user(void) {
 }
 
 void matrix_scan_user(void) {
+    bool is_pressed = (readPin(ENCODER_BTN_PIN) == 0);
+
+    if (is_pressed && !btn_pressed) {
+        // Rising edge: button just pressed
+        btn_pressed        = true;
+        btn_held_with_turn = false;
+    } else if (!is_pressed && btn_pressed) {
+        // Falling edge: button just released
+        btn_pressed = false;
+
+        if (!btn_held_with_turn) {
+            // Short-click action per current layer
+            uint8_t layer = get_highest_layer(layer_state | default_layer_state);
+            switch (layer) {
+                case _BASE:
+                    pending_layer = 0;
+                    layer_move(_SELECT);
+                    break;
+                case _EDIT:
+                    tap_code16(LCTL(KC_S));
+                    break;
+                case _MEDIA:
+                    tap_code(KC_MUTE);
+                    break;
+                case _FN:
+                    tap_code(KC_F23);
+                    break;
+                case _RGB:
+                    user_rgb_on = !user_rgb_on;
+                    apply_rgb_for_layer(get_highest_layer(layer_state | default_layer_state));
+                    break;
+                case _SELECT:
+                    layer_move(pending_layer);
+                    break;
+            }
     static bool last_pressed = false;
     bool pressed = (readPin(ENCODER_BTN_PIN) == 0);
 
