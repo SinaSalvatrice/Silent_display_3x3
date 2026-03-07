@@ -1,7 +1,7 @@
 #pragma once
 
 // Encoder button – active-low against GND, internal pull-up enabled
-#define ENCODER_BTN_PIN GP12
+#define ENCODER_BTN_PIN GP10
 
 // WS2812 RGB LEDs (10 LEDs, data on GP13)
 // WS2812_DI_PIN and RGBLIGHT_LED_COUNT are defined by keyboard.json;
@@ -19,5 +19,3 @@
 #define I2C1_SDA_PIN GP0
 #define OLED_TIMEOUT 60000
 
-// VIA – 6 layers (0-5)
-#define DYNAMIC_KEYMAP_LAYER_COUNT 6

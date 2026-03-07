@@ -6,12 +6,10 @@ on:
     tags:
       - "v*"
     paths:
-      - "keyboards/silent_display_3x3/**"
-      - ".github/workflows/build-uf2-silent_display_3x3.yml"
+      - "**"
   pull_request:
     paths:
-      - "silent_display_3x3/**"
-      - ".github/workflows/build-uf2-silent_display_3x3.yml"
+      - "**"
   workflow_dispatch:
 
 permissions:
@@ -48,49 +46,40 @@ jobs:
 
       - name: Set up QMK firmware
         run: |
-          qmk setup -H ~/qmk_firmware -y
+          git clone --depth 1 --branch master https://github.com/qmk/qmk_firmware.git /home/runner/qmk_firmware
+          cd /home/runner/qmk_firmware
+          git submodule update --init --recursive --depth 1
+          pip install -r requirements.txt
+          qmk config user.qmk_home=/home/runner/qmk_firmware
 
       - name: Copy keyboard into QMK tree
         run: |
-          mkdir -p ~/qmk_firmware/keyboards/silent_display_3x3
+          mkdir -p /home/runner/qmk_firmware/keyboards/silent_display_3x3
           rsync -a --delete \
             --exclude '.git' \
             --exclude '.github' \
             "$GITHUB_WORKSPACE/" \
-            ~/qmk_firmware/keyboards/silent_display_3x3/
+            /home/runner/qmk_firmware/keyboards/silent_display_3x3/
 
-      - name: Compile (custom)
+      - name: Compile (via)
         run: |
-          qmk compile -kb silent_display_3x3 -km custom
-          ls -la ~/qmk_firmware/.build || true
-          find ~/qmk_firmware/.build -maxdepth 1 -type f -name "*.uf2" -print
+          qmk compile -kb silent_display_3x3 -km via
+          ls -la /home/runner/qmk_firmware || true
+          ls -la /home/runner/qmk_firmware/.build || true
+          find /home/runner/qmk_firmware -maxdepth 1 -type f \( -name "*.uf2" -o -name "*.hex" -o -name "*.bin" -o -name "*.elf" \) -print
+          find /home/runner/qmk_firmware/.build -maxdepth 1 -type f \( -name "*.uf2" -o -name "*.hex" -o -name "*.bin" -o -name "*.elf" \) -print
 
-      - name: Upload UF2 artifact (custom)
+      - name: Upload build outputs (via)
         uses: actions/upload-artifact@v4
         with:
-          name: silent_display_3x3_custom_uf2
+          name: silent_display_3x3_via_build
           path: |
-            ~/qmk_firmware/.build/*.uf2
+            /home/runner/qmk_firmware/*.uf2
+            /home/runner/qmk_firmware/*.hex
+            /home/runner/qmk_firmware/*.bin
+            /home/runner/qmk_firmware/*.elf
+            /home/runner/qmk_firmware/.build/*.uf2
+            /home/runner/qmk_firmware/.build/*.hex
+            /home/runner/qmk_firmware/.build/*.bin
+            /home/runner/qmk_firmware/.build/*.elf
           if-no-files-found: error
-
-  release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Download UF2 artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: silent_display_3x3_custom_uf2
-          path: dist
-
-      - name: List files
-        run: |
-          find dist -type f -maxdepth 4 -print
-
-      - name: Create GitHub Release (attach UF2)
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dist/**/*.uf2
