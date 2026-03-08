@@ -78,7 +78,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 // Encoder button handling (pin not in matrix → polled in matrix_scan_user)
 // ---------------------------------------------------------------------------
 void matrix_scan_user(void) {
-    bool is_pressed = (readPin(ENCODER_BTN_PIN) == 0);
+    bool is_pressed = (gpio_read_pin(ENCODER_BTN_PIN) == 0);
 
     if (is_pressed && !btn_pressed) {
         // Rising edge: button just pressed
@@ -272,7 +272,7 @@ void keyboard_post_init_user(void) {
 
 void matrix_scan_user(void) {
     static bool last_pressed = false;
-    bool pressed = (readPin(ENCODER_BTN_PIN) == 0);
+    bool pressed = (gpio_read_pin(ENCODER_BTN_PIN) == 0);
 
     // Toggle RGB on encoder button release.
     if (last_pressed && !pressed) {

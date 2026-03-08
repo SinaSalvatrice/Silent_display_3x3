@@ -11,7 +11,7 @@ void keyboard_post_init_user(void) {
 }
 
 void matrix_scan_user(void) {
-    bool is_pressed = (readPin(ENCODER_BTN_PIN) == 0);
+    bool is_pressed = (gpio_read_pin(ENCODER_BTN_PIN) == 0);
 
     if (is_pressed && !btn_pressed) {
         // Rising edge: button just pressed
@@ -47,7 +47,7 @@ void matrix_scan_user(void) {
                     break;
             }
     static bool last_pressed = false;
-    bool pressed = (readPin(ENCODER_BTN_PIN) == 0);
+    bool pressed = (gpio_read_pin(ENCODER_BTN_PIN) == 0);
 
     // Toggle RGB on encoder button release.
     if (last_pressed && !pressed) {
