@@ -1,4 +1,5 @@
 #include QMK_KEYBOARD_H
+#include "gpio.h"
 
 static bool rgb_on = true;
 static uint8_t rgb_val = RGBLIGHT_DEFAULT_VAL;
