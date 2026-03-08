@@ -2,8 +2,6 @@
   "name": "silent_display_3x3",
   "vendorId": "0xFEED",
   "productId": "0x3333",
-  "keycodes": ["qmk_lighting"],
-  "menus": ["qmk_rgblight"],
   "matrix": {
     "rows": 3,
     "cols": 3

@@ -1,5 +1,8 @@
 #pragma once
 
+// Matrix diode direction
+#define DIODE_DIRECTION COL2ROW
+
 // Encoder button – active-low against GND, internal pull-up enabled
 #define ENCODER_BTN_PIN GP10
 
