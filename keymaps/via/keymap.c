@@ -5,7 +5,7 @@ static bool rgb_on = true;
 static uint8_t rgb_val = RGBLIGHT_DEFAULT_VAL;
 
 void keyboard_post_init_user(void) {
-    setPinInputHigh(ENCODER_BTN_PIN);
+    gpio_set_pin_input_high(ENCODER_BTN_PIN);
     rgblight_enable_noeeprom();
     rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
     rgblight_sethsv_noeeprom(RGBLIGHT_DEFAULT_HUE, RGBLIGHT_DEFAULT_SAT, rgb_val);
