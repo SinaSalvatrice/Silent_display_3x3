@@ -215,7 +215,7 @@ bool oled_task_user(void) {
 // ---------------------------------------------------------------------------
 // Key maps
 // ---------------------------------------------------------------------------
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {3,3} 
 
     // Layer 0 – Navigation
     [_BASE] = LAYOUT(
