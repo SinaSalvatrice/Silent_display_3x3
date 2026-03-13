@@ -44,6 +44,9 @@ btn_turned = False
 
 rgb_on = True
 rgb_value = 80
+rgb_hue = 0
+rgb_sat = 255
+rgb_speed = 8
 
 # Layer hues in degrees (0-360)
 LAYER_HUES = [150, 64, 210, 280, 0, 100, 30, 120, 190]
@@ -105,8 +108,13 @@ def apply_rgb():
         pixels.show()
         return
 
-    hue = LAYER_HUES[active_layer]
-    r, g, b = hsv_to_rgb(hue, 1.0, max(0.0, min(1.0, rgb_value / 255.0)))
+    if active_layer == L_RGB:
+        hue = rgb_hue
+        sat = rgb_sat / 255.0
+    else:
+        hue = LAYER_HUES[active_layer]
+        sat = 1.0
+    r, g, b = hsv_to_rgb(hue, max(0.0, min(1.0, sat)), max(0.0, min(1.0, rgb_value / 255.0)))
     pixels.fill((r, g, b))
     pixels.show()
 
@@ -142,7 +150,7 @@ def tap_combo3(mod1, mod2, key):
 
 
 def key_action(layer, idx):
-    global active_layer, rgb_on, rgb_value, pending_layer
+    global active_layer, rgb_on, rgb_value, pending_layer, rgb_hue, rgb_sat, rgb_speed
 
     if layer == L_BASE:
         actions = {
@@ -206,9 +214,43 @@ def key_action(layer, idx):
             rgb_value = max(0, rgb_value - 8)
             apply_rgb()
 
+        def hue_up():
+            global rgb_hue
+            rgb_hue = (rgb_hue + 8) % 360
+            apply_rgb()
+
+        def hue_dn():
+            global rgb_hue
+            rgb_hue = (rgb_hue - 8) % 360
+            apply_rgb()
+
+        def sat_up():
+            global rgb_sat
+            rgb_sat = min(255, rgb_sat + 8)
+            apply_rgb()
+
+        def sat_dn():
+            global rgb_sat
+            rgb_sat = max(0, rgb_sat - 8)
+            apply_rgb()
+
+        def spd_up():
+            global rgb_speed
+            rgb_speed = min(50, rgb_speed + 1)
+
+        def spd_dn():
+            global rgb_speed
+            rgb_speed = max(1, rgb_speed - 1)
+
         actions = {
+            0: lambda: spd_up(),
+            1: lambda: spd_dn(),
             2: lambda: toggle_rgb(),
+            3: lambda: hue_up(),
+            4: lambda: hue_dn(),
             5: lambda: val_up(),
+            6: lambda: sat_up(),
+            7: lambda: sat_dn(),
             8: lambda: val_dn(),
         }
 
@@ -297,6 +339,7 @@ def encoder_click_action():
     elif active_layer == L_SELECT:
         set_layer(pending_layer)
     else:
+        pending_layer = active_layer
         set_layer(L_SELECT)
 
 

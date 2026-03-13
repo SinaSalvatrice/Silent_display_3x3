@@ -57,6 +57,18 @@ uint8_t rgbSat = 255;
 uint8_t rgbVal = 80;
 int16_t rgbSpeed = 8;
 
+enum MediaAction {
+  MA_PREV,
+  MA_PLAY_PAUSE,
+  MA_NEXT,
+  MA_REWIND,
+  MA_FAST_FORWARD,
+  MA_STOP,
+  MA_MUTE,
+  MA_VOL_UP,
+  MA_VOL_DOWN
+};
+
 long lastEncoderPos = 0;
 unsigned long lastDisplayMs = 0;
 
@@ -82,7 +94,9 @@ void applyRgb() {
     return;
   }
 
-  uint32_t c = layerColor(activeLayer);
+  uint32_t c = (activeLayer == L_RGB)
+                   ? pixels.ColorHSV((uint16_t)rgbHue * 256, rgbSat, rgbVal)
+                   : layerColor(activeLayer);
   for (uint8_t i = 0; i < LED_COUNT; i++) {
     pixels.setPixelColor(i, c);
   }
@@ -131,12 +145,50 @@ void tapCombo3(uint8_t mod1, uint8_t mod2, uint8_t key) {
   Keyboard.releaseAll();
 }
 
-void mediaTap(uint16_t usage) {
+void mediaAction(MediaAction action) {
 #if HAS_HID_PROJECT
-  Consumer.write(usage);
+  switch (action) {
+    case MA_PREV: Consumer.write(MEDIA_PREVIOUS); break;
+    case MA_PLAY_PAUSE: Consumer.write(MEDIA_PLAY_PAUSE); break;
+    case MA_NEXT: Consumer.write(MEDIA_NEXT); break;
+    case MA_REWIND: Consumer.write(MEDIA_REWIND); break;
+    case MA_FAST_FORWARD: Consumer.write(MEDIA_FAST_FORWARD); break;
+    case MA_STOP: Consumer.write(MEDIA_STOP); break;
+    case MA_MUTE: Consumer.write(MEDIA_VOLUME_MUTE); break;
+    case MA_VOL_UP: Consumer.write(MEDIA_VOLUME_UP); break;
+    case MA_VOL_DOWN: Consumer.write(MEDIA_VOLUME_DOWN); break;
+  }
 #else
-  // Fallback when HID-Project is not installed.
-  (void)usage;
+  // Usable keyboard/mouse fallbacks when Consumer HID isn't available.
+  switch (action) {
+    case MA_PREV:
+      tapCombo2(KEY_LEFT_CTRL, KEY_LEFT_ARROW);
+      break;
+    case MA_PLAY_PAUSE:
+      tapKey(' ');
+      break;
+    case MA_NEXT:
+      tapCombo2(KEY_LEFT_CTRL, KEY_RIGHT_ARROW);
+      break;
+    case MA_REWIND:
+      tapKey(KEY_LEFT_ARROW);
+      break;
+    case MA_FAST_FORWARD:
+      tapKey(KEY_RIGHT_ARROW);
+      break;
+    case MA_STOP:
+      tapKey(KEY_ESC);
+      break;
+    case MA_MUTE:
+      tapKey(KEY_ESC);
+      break;
+    case MA_VOL_UP:
+      tapKey(KEY_PAGE_UP);
+      break;
+    case MA_VOL_DOWN:
+      tapKey(KEY_PAGE_DOWN);
+      break;
+  }
 #endif
 }
 
@@ -145,11 +197,7 @@ void scrollStep(bool clockwise) {
 }
 
 void volumeStep(bool clockwise) {
-#if HAS_HID_PROJECT
-  mediaTap(clockwise ? MEDIA_VOLUME_UP : MEDIA_VOLUME_DOWN);
-#else
-  tapKey(clockwise ? KEY_PAGE_UP : KEY_PAGE_DOWN);
-#endif
+  mediaAction(clockwise ? MA_VOL_UP : MA_VOL_DOWN);
 }
 
 void sendLayerKey(uint8_t layer, uint8_t keyIndex) {
@@ -183,14 +231,14 @@ void sendLayerKey(uint8_t layer, uint8_t keyIndex) {
 
     case L_MEDIA:
       switch (keyIndex) {
-        case 0: mediaTap(MEDIA_PREVIOUS); break;
-        case 1: mediaTap(MEDIA_PLAY_PAUSE); break;
-        case 2: mediaTap(MEDIA_NEXT); break;
-        case 3: mediaTap(MEDIA_REWIND); break;
-        case 4: mediaTap(MEDIA_PLAY_PAUSE); break;
-        case 5: mediaTap(MEDIA_FAST_FORWARD); break;
+        case 0: mediaAction(MA_PREV); break;
+        case 1: mediaAction(MA_PLAY_PAUSE); break;
+        case 2: mediaAction(MA_NEXT); break;
+        case 3: mediaAction(MA_REWIND); break;
+        case 4: mediaAction(MA_PLAY_PAUSE); break;
+        case 5: mediaAction(MA_FAST_FORWARD); break;
         case 6: tapKey(KEY_DOWN_ARROW); break;
-        case 7: mediaTap(MEDIA_STOP); break;
+        case 7: mediaAction(MA_STOP); break;
         case 8: tapKey(KEY_UP_ARROW); break;
       }
       break;
@@ -292,9 +340,7 @@ void handleEncoderClick() {
       tapCombo2(KEY_LEFT_CTRL, 's');
       break;
     case L_MEDIA:
-#if HAS_HID_PROJECT
-      mediaTap(MEDIA_VOLUME_MUTE);
-#endif
+      mediaAction(MA_MUTE);
       break;
     case L_FN:
       tapKey(KEY_F23);
