@@ -1,0 +1,6 @@
+# Copy these from the Adafruit CircuitPython bundle into CIRCUITPY/lib
+# Bundle: https://circuitpython.org/libraries
+
+adafruit_displayio_ssd1306.mpy
+adafruit_display_text/
+adafruit_hid/
