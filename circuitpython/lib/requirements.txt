@@ -4,3 +4,6 @@
 adafruit_displayio_ssd1306.mpy
 adafruit_display_text/
 adafruit_hid/
+
+# Built-in modules typically available without copying a library:
+# keypad, rotaryio, neopixel, usb_hid, displayio, terminalio

@@ -2,6 +2,10 @@
 
 This folder contains a complete CircuitPython firmware sketch for the same 3x3 + encoder hardware.
 
+Main firmware file:
+
+- `code.py`
+
 ## Required Libraries
 
 Copy the libraries listed in `lib/requirements.txt` from the latest Adafruit CircuitPython bundle to `CIRCUITPY/lib`.

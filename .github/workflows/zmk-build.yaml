@@ -1,0 +1,21 @@
+name: Build ZMK Firmware
+
+on:
+  push:
+    paths:
+      - "zmk/config/**"
+      - "zmk/build.yaml"
+      - ".github/workflows/zmk-build.yaml"
+  pull_request:
+    paths:
+      - "zmk/config/**"
+      - "zmk/build.yaml"
+      - ".github/workflows/zmk-build.yaml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
+    with:
+      config_path: zmk/config
+      build_matrix_path: zmk/build.yaml
