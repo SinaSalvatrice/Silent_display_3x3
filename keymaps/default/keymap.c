@@ -1,5 +1,14 @@
+
 #include QMK_KEYBOARD_H
-#include "gpio.h"
+#include <stdbool.h>
+#include <stdint.h>
+#ifdef ENCODER_BTN_PIN
+#  include "gpio.h"
+#else
+#  define ENCODER_BTN_PIN 0
+#  define gpio_set_pin_input_high(pin)
+#  define gpio_read_pin(pin) 1
+#endif
 
 // ---------------------------------------------------------------------------
 // Layer definitions
@@ -58,9 +67,7 @@ static void apply_rgb_for_layer(uint8_t layer) {
 // Keyboard init
 // ---------------------------------------------------------------------------
 void keyboard_post_init_user(void) {
-    debug_enable   = false;
-    debug_matrix   = false;
-    debug_keyboard = false;
+
 
     gpio_set_pin_input_high(ENCODER_BTN_PIN);
     apply_rgb_for_layer(_BASE);
