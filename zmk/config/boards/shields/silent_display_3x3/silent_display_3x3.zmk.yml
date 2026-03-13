@@ -1,0 +1,12 @@
+file_format: "1"
+id: silent_display_3x3
+name: Silent Display 3x3
+type: shield
+url: ""
+requires:
+  - seeeduino_xiao_rp2040
+features:
+  - keys
+  - encoder
+  - underglow
+  - display
