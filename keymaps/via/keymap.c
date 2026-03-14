@@ -1,4 +1,3 @@
-#include "quantum.h"
 #include "silent_display_3x3.h"
 #include <stdbool.h>
 #include <stdint.h>
